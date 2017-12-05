@@ -1,7 +1,7 @@
 /**
- * IPC隔离：CLONE_NEWIPC
+ * PID隔离：CLONE_NEWPID
  * 
- * 隔离进程间通信作用
+ * 对子进程PID重新标号，内核维护一套PID的树状结构
  */
 #define _GNU_SOURCE
 
@@ -29,7 +29,7 @@ int child_main(void *args)
 int main()
 {
     printf("main process: %d\n", getpid());
-    int child_pid = clone(child_main, child_stack + STACK_SIZE, CLONE_NEWUTS | CLONE_NEWIPC | SIGCHLD, NULL);
+    int child_pid = clone(child_main, child_stack + STACK_SIZE, CLONE_NEWUTS | CLONE_NEWIPC | CLONE_NEWPID | SIGCHLD, NULL);
     waitpid(child_pid, NULL, 0);
     printf("exit.\n");
     return 0;
