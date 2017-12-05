@@ -1,7 +1,7 @@
 /**
- * UTS隔离：CLONE_NEWUTS
+ * IPC隔离：CLONE_NEWIPC
  * 
- * 隔离主机名和域名，起到隔离网络节点的作用
+ * 隔离进程间通信作用
  */
 #define _GNU_SOURCE
 
@@ -22,7 +22,6 @@ char *const child_args[] = {"/bin/bash", NULL};
 int child_main(void *args)
 {
     printf("child process: %d\n", getpid());
-    sethostname("test_child_host", 12);
     execv(child_args[0], child_args);
     return 1;
 }
@@ -30,7 +29,7 @@ int child_main(void *args)
 int main()
 {
     printf("main process: %d\n", getpid());
-    int child_pid = clone(child_main, child_stack + STACK_SIZE, CLONE_NEWUTS | SIGCHLD, NULL);
+    int child_pid = clone(child_main, child_stack + STACK_SIZE, CLONE_NEWIPC | SIGCHLD, NULL);
     waitpid(child_pid, NULL, 0);
     printf("exit.\n");
     return 0;
